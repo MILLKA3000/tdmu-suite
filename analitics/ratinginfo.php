@@ -24,44 +24,110 @@ echo "</td></tr>";
 //Draw departmnet selector
 echo "<tr><td bgcolor=gray valign=top><center>";
 navigate('Кафедра (чи всі):',$department,'DEPARTMENT');
-
+echo "</td></tr>";
+//Draw options checkboxes
+echo "<tr><td bgcolor=gray valign=top><center>";
+    if ($_POST['DETAIL']=="on"){
+        echo"<input type='checkbox' class='DETAIL' name='DETAIL' CHECKED> "." - Детальна інформація"."<br>";
+    } else {
+        echo"<input type='checkbox' class='DETAIL' name='DETAIL'> "." - Детальна інформація"."<br>";
+    }
+    if ($_POST['SUMMARY']=="on"){
+        echo"<input type='checkbox' class='SUMMARY' name='SUMMARY' CHECKED> "." - Сумарна інформація"."<br>";
+    } else {
+        echo"<input type='checkbox' class='SUMMARY' name='SUMMARY'> "." - Сумарна інформація"."<br>";
+    }
+//check('детальна інформація:',$detail,'DETAIL');
+//check('сумарна інформація:',$summary,'SUMMARY');
 echo "</td></tr></table>";
 echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
 
     if (!$_POST['INDEXID']==0){
-        if (!$_POST['DEPARTMENT']==0) {
-        $zag_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
-                                    FROM `tr_teacher_indices_values` tiv
-                                    INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                    INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                    INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
-                                    WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name, tn.name");	
-        } else {
-            $zag_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
+        //Processing will start only if someone parameter is selected
+        if ($_POST['DETAIL']=="on") {
+            //Processing "show detail info" checkbox option
+            if (!$_POST['DEPARTMENT']==0) {
+                //Get detail data for a selected department
+                $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                         FROM `tr_teacher_indices_values` tiv
                                         INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
                                         INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
                                         INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
-                                        WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) order by tk.kaf_name, tn.name");    
-        }
-        echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=3><center><b>".$ratingindex[$_POST['INDEXID']][1]."</b></td></tr>
-    <tr><td><center><b>Назва кафедри</td><td><center><b>П.І.Б. викладача</td><td><center><b>Значення параметру</td></tr>";
-        for ($i=0;$i<count($zag_mas);$i++)
-        {
-        echo "<tr>";
-            for($j=0;$j<count($zag_mas[0]);$j++)
-            {
-                if ($j<2) {
-                    $cell_alignment = "<left>";
-                } else {
-                    $cell_alignment = "<center>";
-                }
-                echo "<td>".$cell_alignment.$zag_mas[$i][$j]."</td>";
+                                        WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name, tn.name");
+            } else {
+                //Get detail data for all departments
+                $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
+                                                FROM `tr_teacher_indices_values` tiv
+                                                INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
+                                                INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
+                                                INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                                WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) order by tk.kaf_name, tn.name");            
             }
-        echo "</tr>";
+            //Display detail data table
+            echo "<center><h3>Детальна інформація по кафедрі(ах)</h3>";            
+            echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=3><center><b>".$ratingindex[$_POST['INDEXID']][1]."</b></td></tr><tr><td><center><b>Назва кафедри</td><td><center><b>П.І.Б. викладача</b></td><td><center><b>Значення параметру</b></td></tr>";
+            for ($i=0;$i<count($detail_mas);$i++)
+            {
+                echo "<tr>";
+                for($j=0;$j<count($detail_mas[0]);$j++)
+                {
+                    if ($j<2) {
+                        $cell_alignment = "<left>";
+                    } else {
+                        $cell_alignment = "<center>";
+                    }
+                    echo "<td>".$cell_alignment.$detail_mas[$i][$j]."</td>";
+                }
+                echo "</tr>";
+            }
+            echo "</table>";
+        } 
+        if ($_POST['SUMMARY']=="on") {
+            //Processing "show summary info" checkbox option
+            if (!$_POST['DEPARTMENT']==0) {
+                //Get summary data for a selected department         
+                $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
+                                        FROM `tr_teacher_indices_values` tiv
+                                        INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
+                                        INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
+                                        INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name");
+            } else {
+                //Get summary data for all departments            
+                $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
+                                                FROM `tr_teacher_indices_values` tiv
+                                                INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
+                                                INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
+                                                INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                                WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) GROUP BY tk.kaf_id ORDER BY tk.kaf_name, tn.name");         
+            }
+            //Display summary data table
+            echo "<center><h3>Сумарна інформація по кафедрі(ах)</h3>";            
+            echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=2><center><b>".$ratingindex[$_POST['INDEXID']][1]."</b></td></tr><tr><td><center><b>Назва кафедри</b></td><td><center><b>Сумарно по кафедрі</b></td></tr>";
+            $grand_total = 0;
+            for ($i=0;$i<count($summary_mas);$i++)
+            {
+                echo "<tr>";
+                for($j=0;$j<count($summary_mas[0]);$j++)
+                {
+                    if ($j<1) {
+                        $cell_alignment = "<left>";
+                    } else {
+                        $cell_alignment = "<center>";
+                    }
+                    echo "<td>".$cell_alignment.$summary_mas[$i][$j]."</td>";
+                    $grand_total = $grand_total + $summary_mas[$i][$j];//Calculate total for whole university
+                }
+                echo "</tr>";
+            }
+            echo "</table>";
+            //Display total for whole university data table
+            if ($_POST['DEPARTMENT']==0) {
+                echo "<center><h3>Сумарна інформація по університету</h3>";
+                echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td><center><b>Назва параметру</td><td><center><b>Сумарне значення параметру</b></td></tr>";
+                echo" <tr><td><left><b>".$ratingindex[$_POST['INDEXID']][1]."</b></td><td><center><b>".$grand_total."</b></td></tr></table>";              
+            }
         }
-        echo "</table>";
     }
-
 }else {header("Location: index.php");}
 ?> 
