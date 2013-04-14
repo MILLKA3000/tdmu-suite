@@ -44,7 +44,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
 
     if (!$_POST['INDEXID']==0){
         //Processing will start only if someone parameter is selected
-        if (!$_POST['DETAIL']=="on") {
+        if ($_POST['DETAIL']=="on") {
             //Processing "show detail info" checkbox option
             if (!$_POST['DEPARTMENT']==0) {
                 //Get detail data for a selected department
@@ -82,7 +82,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
             }
             echo "</table>";
         } 
-        if (!$_POST['SUMMARY']=="on") {
+        if ($_POST['SUMMARY']=="on") {
             //Processing "show summary info" checkbox option
             if (!$_POST['DEPARTMENT']==0) {
                 //Get summary data for a selected department         
@@ -99,7 +99,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                                                 INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
                                                 INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
                                                 INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
-                                                WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) order by tk.kaf_name, tn.name");         
+                                                WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) GROUP BY tk.kaf_id ORDER BY tk.kaf_name, tn.name");         
             }
             //Display summary data table
             echo "<center><h3>Сумарна інформація по кафедрі(ах)</h3>";            
@@ -123,9 +123,9 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
             echo "</table>";
             //Display total for whole university data table
             if ($_POST['DEPARTMENT']==0) {
-                echo "<center><h3>Сумарна інформація по університету</h3>";            
-                echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td><left><b>".$ratingindex[$_POST['INDEXID']][1]."</b></td></tr>";
-                echo"<tr><td><center><b>".$grand_total."</b></td></tr></table>";
+                echo "<center><h3>Сумарна інформація по університету</h3>";
+                echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td><center><b>Назва параметру</td><td><center><b>Сумарне значення параметру</b></td></tr>";
+                echo" <tr><td><left><b>".$ratingindex[$_POST['INDEXID']][1]."</b></td><td><center><b>".$grand_total."</b></td></tr></table>";              
             }
         }
     }
