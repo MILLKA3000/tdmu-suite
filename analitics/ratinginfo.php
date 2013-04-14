@@ -24,7 +24,21 @@ echo "</td></tr>";
 //Draw departmnet selector
 echo "<tr><td bgcolor=gray valign=top><center>";
 navigate('Кафедра (чи всі):',$department,'DEPARTMENT');
-
+echo "</td></tr>";
+//Draw options checkboxes
+echo "<tr><td bgcolor=gray valign=top><center>";
+    if ($_POST['DETAIL']=="on"){
+        echo"<input type='checkbox' class='DETAIL' name='DETAIL' CHECKED> "." - Детальна інформація"."<br>";
+    } else {
+        echo"<input type='checkbox' class='DETAIL' name='DETAIL'> "." - Детальна інформація"."<br>";
+    }
+    if ($_POST['SUMMARY']=="on"){
+        echo"<input type='checkbox' class='SUMMARY' name='SUMMARY' CHECKED> "." - Сумарна інформація"."<br>";
+    } else {
+        echo"<input type='checkbox' class='SUMMARY' name='SUMMARY'> "." - Сумарна інформація"."<br>";
+    }
+check('детальна інформація:',$detail,'DETAIL');
+check('сумарна інформація:',$summary,'SUMMARY');
 echo "</td></tr></table>";
 echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
 
