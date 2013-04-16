@@ -78,6 +78,25 @@ function select_question($variant,$predmet)
   $this->sql_close();
   return $questions;
  }
+ function select_question_count($variant,$predmet)
+ {  
+  $questions = array(array());
+  $i=0;
+  
+  $this->sql_connect();
+  $this->sql_query="SELECT count(`variant`.`variant`) FROM  `variant` WHERE  `variant`.`variant`=".$variant." AND `variant`.`predmet`=".$predmet.";";
+  //$this->sql_query="call `selectgroup`(".$variant.",".$predmet.")";
+  $this->sql_execute();
+  while($Mas = mysql_fetch_array($this->sql_result))
+  {
+     $questions[$i]['count'] = $Mas['count(`variant`.`variant`)'];   
+          
+    
+       $i++;
+    }
+  $this->sql_close();
+  return $questions;
+ }
 function select_type_variant($sql)
 {	$var = array(array());
 	$i=0;
@@ -89,6 +108,9 @@ function select_type_variant($sql)
 			$var[$i]['id'] = $Mas['id'];
 			$var[$i]['date'] = $Mas['date'];
 			$var[$i]['note'] = $Mas['note'];
+                      $var[$i]['id_spec'] = $Mas['id_spec'];
+                      $var[$i]['id_year'] = $Mas['id_year'];
+                      $var[$i]['type'] = $Mas['type'];
 			$i++;
 		}
 	$this->sql_close();
@@ -112,5 +134,30 @@ function select_variant($sql)
 	$this->sql_close();
 	return $var;
 }
+function select($parameter)
+ {  $Row=array(array());
+    $j=0;
+  $this->sql_connect();
+  $this->sql_query=$parameter;
+  $this->sql_execute();
+ 
+  while($Mas = mysql_fetch_row($this->sql_result))
+	{
+		for ($i=0;$i<count($Mas);$i++){
+	   $Row[$j][$i] = $Mas[$i];   
+	   }
+     $j++;   
+       
+    }
+if ($Row[0][0]==''){$Row=NULL;}
+  return $Row;
+ }
+function ins($parameter)
+ {  
+  $this->sql_connect();
+  $this->sql_query=$parameter;
+  $this->sql_execute();
+  
+ }
 }
 ?>

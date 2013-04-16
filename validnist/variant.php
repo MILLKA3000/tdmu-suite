@@ -1,8 +1,12 @@
 <HEAD><TITLE>Валідність тестових завдань</TITLE>
 <META http-equiv="Content-Type" Content="text/html; charset=windows-1251">
+
  <script type="text/javascript" src="script/jquery.js"></script> 
  <script src="http://code.jquery.com/jquery-latest.js"></script>
  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script src="script/bootstrap-datepicker.js"></script>
+
+
 
  
  <link rel="stylesheet" href="css/style.css" type="text/css">
@@ -21,7 +25,14 @@ echo "<center><form action='variant.php' method='POST' enctype='multipart/form-d
 
 if (($_POST['variant']!='') && ($_POST['predmet'])!=''){ 
 
- $question=$base->select_question($_POST['variant'],$_POST['predmet']);
+	$type_old_var [0]= $base->select("SELECT distinct(variant.variant),variant.sumstyd,type_validn.date,speciality.name,year.name,type_validn.type,variant.type FROM variant,type_validn,speciality,year WHERE variant='".$_POST['variant']."' AND type_validn.id=variant.type AND type_validn.id_spec=speciality.id AND type_validn.id_year=year.id;");
+	$name_title_table[0]=array("Варіант","Кількість студентів","Дата","Спеціальність","Рік здачі","Кількість питань","--");
+	$name_table=array("Найдені групи варіантів (".count($type_old_var[0]).")");
+	$table_id=array('1');
+	table($name_table,$type_old_var ,$table_id,$name_title_table);
+echo "<br>";
+if ($_GET['type']!=''){$sql_variant=$_POST['variant']." AND type=".$_GET['type'];}else{$sql_variant=$_POST['variant'];}
+ $question=$base->select_question($sql_variant,$_POST['predmet']);
  }
 //print_r($question);
  
@@ -105,3 +116,4 @@ pos=1;
 <?
 include ("wood_script.php");
 ?>
+ <script type="text/javascript" src="script/ser.js"></script>

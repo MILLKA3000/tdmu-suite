@@ -4,6 +4,7 @@
 
      
 <?php
+include "menu.php";
 if ($_SESSION['name_sesion_a']=="admin"){
  include "class/function.php";
   include "class/mysql-class.php";
@@ -12,6 +13,8 @@ include_once("XLSToDBNew.class.php");
 $base = new class_mysql_base();
 $data = new XLSToDB("test.xls", 'CP1251');
 
+$speciality = $base-> select("select id,name from speciality where 1;");
+$year = $base-> select("select id,name from year where 1;");
 ?>
 <HTML>
 <HEAD><TITLE>Валідність тестових завдань</TITLE>
@@ -22,7 +25,7 @@ $data = new XLSToDB("test.xls", 'CP1251');
 
 <?php
 
-include "menu.php";
+
 $strResultHeader = "
 <html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:word\" xmlns=\"http://www.w3.org/TR/REC-html40\">
 <head>
@@ -33,13 +36,18 @@ $strResultHeader = "
 
 <body>";
 
-//new
+//new //
 echo "<center><form action='all24.php' method='post' enctype='multipart/form-data'>
   <table width=90% style='border: 1px solid blue;margin-top:20px;background-color:white;'><tr><td>
  
  </td><td><center><h2><p><b>Завантажити файл з 24 питаннями </b></p></h2></center>
 <b>Записати до БД дані</b><br>
-Відмітьте для запису<input type='checkbox' name='bd'><br><br>
+Відмітьте для запису<input type='checkbox' name='bd'><br>
+<b>Виберіть спеціальність</b>";
+navigate("Спеціальність",$speciality,"spec");
+echo "<br><b>Виберіть рік здачі</b>";
+navigate("Рік",$year,"year");
+echo "<br>
 <b>Виберіть файл для обробки</b> <br><input type='file' name='filename'  value='Огляд'>
  <input type='submit' value='Завантажити файл'><br></table></form>";
 
@@ -71,7 +79,7 @@ $lehki = array();
 $vashki = array();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 if ($_POST['bd']=='on'){
-	$last_id_type = $base->insert("INSERT INTO  `val`.`type_validn` (`date` ,`note`) VALUES ('".date("Y-m-d")."', '".$fileXLS."');");}
+	$last_id_type = $base->insert("INSERT INTO  `val`.`type_validn` (`date` ,`note`,`id_spec`,`id_year`,`type`) VALUES ('".date("Y-m-d")."', '".$fileXLS."', '".$_POST['spec']."', '".$_POST['year']."','24');");}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 foreach ($variantArray as $vk=>$vv)
@@ -269,4 +277,5 @@ fclose($fp2);}
 <?
 include ("wood_script.php");
 }?>
+
 </BODY></HTML>
