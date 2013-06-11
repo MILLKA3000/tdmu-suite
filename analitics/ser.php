@@ -152,12 +152,49 @@ for ($i=0;$i<count($sem);$i++)
 }
 
 echo " <script type='text/javascript'> var mas = ".js_array($id)."</script>";
-
-
+//upd 2013-06: convert 120/80 ECTS level back to the 12-ball grade system
   $zagalne =$contingent->select("select
- avg( S2T.CREDITS_CUR ) avg_of_credits_cur,
-  avg( S2T.credits_test ) avg_of_credits_test,
-  avg( S2T.credits_all ) avg_of_credits_all
+ avg(
+case
+ when S2T.CREDITS_CUR=66 then 4
+ when S2T.CREDITS_CUR=69 then 4.5
+ when S2T.CREDITS_CUR=72 then 5
+ when S2T.CREDITS_CUR=75 then 5.5
+ when S2T.CREDITS_CUR=78 then 6
+ when S2T.CREDITS_CUR=81 then 6.5
+ when S2T.CREDITS_CUR=84 then 7
+ when S2T.CREDITS_CUR=87 then 7.5
+ when S2T.CREDITS_CUR=90 then 8
+ when S2T.CREDITS_CUR=93 then 8.5
+ when S2T.CREDITS_CUR=96 then 9
+ when S2T.CREDITS_CUR=99 then 9.5
+ when S2T.CREDITS_CUR=102 then 10
+ when S2T.CREDITS_CUR=105 then 10.5
+ when S2T.CREDITS_CUR=108 then 11
+ when S2T.CREDITS_CUR=111 then 11.5
+ when S2T.CREDITS_CUR=112 then 12
+ else 0
+ END 
+ ) avg_of_credits_cur,
+  avg(
+ case
+ when S2T.credits_test=50 then 5.5
+ when S2T.credits_test=52 then 6
+ when S2T.credits_test=54 then 6.5
+ when S2T.credits_test=56 then 7
+ when S2T.credits_test=58 then 7.5
+ when S2T.credits_test=60 then 8
+ when S2T.credits_test=62 then 8.5
+ when S2T.credits_test=64 then 9
+ when S2T.credits_test=66 then 9.5
+ when S2T.credits_test=68 then 10
+ when S2T.credits_test=70 then 10.5
+ when S2T.credits_test=72 then 11
+ when S2T.credits_test=74 then 11.5
+ when S2T.credits_test=80 then 12
+ else 0
+ END 
+  ) avg_of_credits_test
 from STUDENT2TESTLIST S2T
 inner join B_TESTLIST BT
   on (BT.TESTLISTID = S2T.TESTLISTID)
@@ -168,33 +205,20 @@ inner join B_VARIANT_ITEMS BVI_V
 where  BVI_V.DISCIPLINEID = ".$_GET['DISCIPLINE']."
   and BVI_V.SPECIALITYID = ".$_GET['SPECIALITY']."
   and BT.DEPARTMENTID = ".$_GET['DEPARTMENT']." 
- ".$exampl." AND (".$sql_year_sem.");"); 
-
-/*echo "select
- avg( S2T.CREDITS_CUR ) avg_of_credits_cur,
-  avg( S2T.credits_test ) avg_of_credits_test,
-  avg( S2T.credits_all ) avg_of_credits_all
-from STUDENT2TESTLIST S2T
-inner join B_TESTLIST BT
-  on (BT.TESTLISTID = S2T.TESTLISTID)
-inner join B_VARIANT_ITEMS BVI_M 
-  on (BVI_M.VARIANTID = BT.VARIANTID)
-inner join B_VARIANT_ITEMS BVI_V 
-  on (BVI_V.VARIANTID = BVI_M.PARENTVARIANTID)
-where  BVI_V.DISCIPLINEID = ".$_GET['DISCIPLINE']."
-  and BVI_V.SPECIALITYID = ".$_GET['SPECIALITY']."
-  and BT.DEPARTMENTID = ".$_GET['DEPARTMENT']." 
- ".$exampl." AND (".$sql_year_sem.");";*/
+ ".$exampl." AND (".$sql_year_sem.");");
+ 
 
 echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=3>Результат по вибраних відомостях (".$id_sql.")</td></tr>
 <tr><td><center><b>Поточна</td><td><center><b>Екзаменаційна</td><td><center><b>Загальна</td></tr>";
   for ($i=0;$i<count($zagalne);$i++)
   {
   echo "<tr>";
-		for($j=0;$j<count($zagalne[0]);$j++)
-		{
-			echo "<td><center>".$zagalne[$i][$j]."</td>";
-		}
+    $avg_curr = $zagalne[$i][0];
+    $avg_test = $zagalne[$i][1];
+    $avg_total = round($avg_curr*0.6 + $avg_test*0.4,1);
+    echo "<td><center>".$zagalne[$i][0]."</td>";//Поточна
+    echo "<td><center>".$zagalne[$i][1]."</td>";//Екзаменаційна
+    echo "<td><center>".$avg_total."</td>";//Загальна
   echo "</tr>";
   }
 echo "</table>";
