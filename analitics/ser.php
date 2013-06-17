@@ -90,12 +90,26 @@ $parts = explode("(", strip_tags($kaf[0][1]));
   echo "
   <table bgcolor='white' border=1 width=100% class='ser2'><tr style='text-align:center' bgcolor=gray><td width=3%>
   <input type='checkbox' id='toggle' value='S' onClick='do_this()' /></td><td>Номер варіанту</td><td>Сум</td><td>Рік</td><td>Семестер</td><td>Номер<br>модуля</td><td>Назва модуля</td>";
-
+  
+  //prepare variables to the paint row with different eduplanid by different colors
+  $prev_eduplanid = $zag_mas[0][0];
+  $first_row_bgcolor = "pink"; 
+  $second_row_bgcolor = "yellow";
+  $row_bgcolor = $first_row_bgcolor;
+  
   for ($i=0;$i<count($zag_mas);$i++)
   {
-	echo "<tr class='id2' name='id[".$zag_mas[$i][0]."][".$zag_mas[$i][2]."][".$zag_mas[$i][3]."]' year='".$zag_mas[$i][2]."' sem='".$zag_mas[$i][3]."' mod='".$zag_mas[$i][4]."'>
+    //repaint row with different eduplanid by different colors
+    if ($zag_mas[$i][0] != $prev_eduplanid)
+    {
+        $prev_eduplanid = $zag_mas[$i][0];
+        if ($row_bgcolor == $first_row_bgcolor) {$row_bgcolor = $second_row_bgcolor;} else {$row_bgcolor = $first_row_bgcolor;}
+    }
+    //draw new table row and add one extra cell with checkbox
+	echo "<tr bgcolor=".$row_bgcolor." class='id2' name='id[".$zag_mas[$i][0]."][".$zag_mas[$i][2]."][".$zag_mas[$i][3]."]' year='".$zag_mas[$i][2]."' sem='".$zag_mas[$i][3]."' mod='".$zag_mas[$i][4]."'>
 	
 	<td bgcolor=gray><input type='checkbox' class='id'  name='id[".$zag_mas[$i][0]."][".$zag_mas[$i][2]."][".$zag_mas[$i][3]."]' year='".$zag_mas[$i][2]."' sem='".$zag_mas[$i][3]."' mod='".$zag_mas[$i][4]."'></td>";
+        //draw all other cells within selected row
 		for($j=0;$j<count($zag_mas[0]);$j++)
 		{
 			echo "<td><center>".$zag_mas[$i][$j]."</td>";
