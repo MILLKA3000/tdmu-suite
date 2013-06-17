@@ -90,12 +90,26 @@ $parts = explode("(", strip_tags($kaf[0][1]));
   echo "
   <table bgcolor='white' border=1 width=100% class='ser2'><tr style='text-align:center' bgcolor=gray><td width=3%>
   <input type='checkbox' id='toggle' value='S' onClick='do_this()' /></td><td>Номер варіанту</td><td>Сум</td><td>Рік</td><td>Семестер</td><td>Номер<br>модуля</td><td>Назва модуля</td>";
-
+  
+  //prepare variables to the paint row with different eduplanid by different colors
+  $prev_eduplanid = $zag_mas[0][0];
+  $first_row_bgcolor = "pink"; 
+  $second_row_bgcolor = "yellow";
+  $row_bgcolor = $first_row_bgcolor;
+  
   for ($i=0;$i<count($zag_mas);$i++)
   {
-	echo "<tr class='id2' name='id[".$zag_mas[$i][0]."][".$zag_mas[$i][2]."][".$zag_mas[$i][3]."]' year='".$zag_mas[$i][2]."' sem='".$zag_mas[$i][3]."' mod='".$zag_mas[$i][4]."'>
+    //repaint row with different eduplanid by different colors
+    if ($zag_mas[$i][0] != $prev_eduplanid)
+    {
+        $prev_eduplanid = $zag_mas[$i][0];
+        if ($row_bgcolor == $first_row_bgcolor) {$row_bgcolor = $second_row_bgcolor;} else {$row_bgcolor = $first_row_bgcolor;}
+    }
+    //draw new table row and add one extra cell with checkbox
+	echo "<tr bgcolor=".$row_bgcolor." class='id2' name='id[".$zag_mas[$i][0]."][".$zag_mas[$i][2]."][".$zag_mas[$i][3]."]' year='".$zag_mas[$i][2]."' sem='".$zag_mas[$i][3]."' mod='".$zag_mas[$i][4]."'>
 	
 	<td bgcolor=gray><input type='checkbox' class='id'  name='id[".$zag_mas[$i][0]."][".$zag_mas[$i][2]."][".$zag_mas[$i][3]."]' year='".$zag_mas[$i][2]."' sem='".$zag_mas[$i][3]."' mod='".$zag_mas[$i][4]."'></td>";
+        //draw all other cells within selected row
 		for($j=0;$j<count($zag_mas[0]);$j++)
 		{
 			echo "<td><center>".$zag_mas[$i][$j]."</td>";
@@ -156,7 +170,7 @@ echo " <script type='text/javascript'> var mas = ".js_array($id)."</script>";
   $zagalne =$contingent->select("select
  avg(
 case
- when S2T.CREDITS_CUR=66 then 4
+ when (S2T.CREDITS_CUR>=40)and(S2T.CREDITS_CUR<=66) then 4
  when S2T.CREDITS_CUR=69 then 4.5
  when S2T.CREDITS_CUR=72 then 5
  when S2T.CREDITS_CUR=75 then 5.5
@@ -172,7 +186,7 @@ case
  when S2T.CREDITS_CUR=105 then 10.5
  when S2T.CREDITS_CUR=108 then 11
  when S2T.CREDITS_CUR=111 then 11.5
- when S2T.CREDITS_CUR=112 then 12
+ when S2T.CREDITS_CUR>=112 then 12
  else 0
  END 
  ) avg_of_credits_cur,
@@ -191,7 +205,7 @@ case
  when S2T.credits_test=70 then 10.5
  when S2T.credits_test=72 then 11
  when S2T.credits_test=74 then 11.5
- when S2T.credits_test=80 then 12
+ when S2T.credits_test>=76 then 12
  else 0
  END 
   ) avg_of_credits_test
