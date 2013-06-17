@@ -156,7 +156,7 @@ echo " <script type='text/javascript'> var mas = ".js_array($id)."</script>";
   $zagalne =$contingent->select("select
  avg(
 case
- when S2T.CREDITS_CUR=66 then 4
+ when (S2T.CREDITS_CUR>=40)and(S2T.CREDITS_CUR<=66) then 4
  when S2T.CREDITS_CUR=69 then 4.5
  when S2T.CREDITS_CUR=72 then 5
  when S2T.CREDITS_CUR=75 then 5.5
@@ -172,7 +172,7 @@ case
  when S2T.CREDITS_CUR=105 then 10.5
  when S2T.CREDITS_CUR=108 then 11
  when S2T.CREDITS_CUR=111 then 11.5
- when S2T.CREDITS_CUR=112 then 12
+ when S2T.CREDITS_CUR>=112 then 12
  else 0
  END 
  ) avg_of_credits_cur,
@@ -191,7 +191,7 @@ case
  when S2T.credits_test=70 then 10.5
  when S2T.credits_test=72 then 11
  when S2T.credits_test=74 then 11.5
- when S2T.credits_test=80 then 12
+ when S2T.credits_test>=76 then 12
  else 0
  END 
   ) avg_of_credits_test
