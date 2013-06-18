@@ -29,7 +29,33 @@ $doc_4_spec_by_fkt = array (
 //$doc_4_spec_nurse = array(lik=>"Лікувальна справа",biol=>"Біологія");
 
 ///print_r($doc_4_spec_by_fkt);
+function getSubDirFoolproof($dir, $sub)
+{
+    /*
+    This is the ONLY WAY we have to make SURE that the
+    last segment of $dir is a file and not a directory.
+    */
+    if (is_file($dir))
+    {
+        $dir = dirname($dir);
+    }
 
+    // Is it necessary to convert to the fully expanded path?
+    $dir = realpath($dir);
+    $sub = realpath($sub);
+
+    // Do we need to worry about Windows?
+    $dir = str_replace('\\', '/', $dir);
+    $sub = str_replace('\\', '/', $sub);
+
+    // Here we filter leading, trailing and consecutive slashes.
+    $dir = array_filter(explode('/', $dir));
+    $sub = array_filter(explode('/', $sub));
+    // All done!
+    return array_diff($dir, $sub);
+    //return array_slice(array_diff($dir, $sub), 0, 1);//return just 1 first subfolder in $dir that follow firstly after $sub
+}
+/*
 echo "=============================================================";
 $path = realpath("informatika/classes_stud/");
 
@@ -42,6 +68,7 @@ $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), 
 //{
 //    echo "<p>".$name."</p>";    
 //}
+
 $filecount = 0;
 foreach($objects as $path)
 {
@@ -63,10 +90,11 @@ if ($filecount > 0){
            echo "<p>Files count: ".$filecount."</p>";
            $filecount = 0;
 }
-
+*/
 echo "=============================================================";
 $res_count = array();
 $res_info = array();
+$tmp_dirname_arr = array();
 //precess all categories
 foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
 {
@@ -88,47 +116,58 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
                 $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
-                $path = realpath($path_str);
-                if (is_dir($path)) {//process only existing base path
-                //$info = new SplFileInfo($path);
-                //$basedepth = $info->getDepth();
-                //echo "<p>-base_depth: ".$basedepth."</p>";
-                    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::CHILD_FIRST);
+                $base_path = realpath($path_str);
+                if (is_dir($base_path)) {//process only existing base path
+                    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($base_path), RecursiveIteratorIterator::CHILD_FIRST);
         
                     foreach($objects as $path)
                     {
                         if ($path->isDir()) {
                             if ($filecount > 0){
                               //  echo "<p>-curr_depth: ".$currdepth."</p>"; 
-                               // echo "<p>course: ".$curr_course."</p>";
-                              //  echo "<p>subject: ".$curr_course."</p>";
+                                echo "<p>term: ".$curr_term."</p>";
+                                echo "<p>subject, course: ".$curr_course."</p>";
                                 echo "<p>Files count: ".$filecount."</p>";
                                 $filecount = 0;//reset count - start a new folder
-                                //echo "<p>debug: curr_dir ".$curr_dir."</p>";
+                               // echo "<p>debug: curr_dir ".$curr_dir."</p>";
                                 //todo -1- display subject name and course num
                                 //todo -2- save data there
                             
                                 /// $res_count [$cat_id][$lang_id]= $filecount;//??
                             }
-                            //echo "<p>".($path->__toString())."</p>";
                         } else if ($path->isFile()) {
-                                $curr_file = $path->getPath();
-                                //check path and skip .Files or _files content
-                                if ((stripos($curr_file, $skip_dir1)===false)&&(stripos($curr_file, $skip_dir2)===false)){
-                                echo "<p>debug: curr_dir1 ".$curr_file."</p>";
+                            //check path and skip .Files or _files content                        
+                            $curr_dir = $path->getPath();
+                            if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
+                                //echo "<p>debug: curr_dir1 ".$curr_dir."</p>";
                                 //echo "<p>debug: check ".stripos($curr_file, $skip_dir1)."</p>";
-                                    //todo -2- check filetype
+                                //check filetype
+                                $file = $path->getFilename();    
+                                if ((stripos($file,".htm"))||(stripos($file,".html"))||(stripos($file,".ppt"))||(stripos($file,".pptx"))||(stripos($file,".pdf"))){
+                                    $filecount++;
                                     //todo -3- store subject name and course num
-                                    $filecount = $filecount +1;
+                                    $curr_subject = '';
+                                    $tmp_dirname_arr = getSubDirFoolproof($curr_dir, $base_path);
+//var_dump($tmp_dirname_arr);
+                                    foreach($tmp_dirname_arr as $subdir_id=>$subdir_name){
+                                        if ($subdir_name == "ptp") {
+                                            $curr_term = "Повний термін навчання";
+                                        } elseif ($subdir_name == "ntn") {
+                                            $curr_term = "Нормативний термін навчання";
+                                        } else {
+                                            $curr_subject = $curr_subject."  ".$subdir_name;
+                                        }
+                                    }
+
+
                                 
-                                    /// $curr_term = 
-                                    //$currdepth = $objects->getDepth();
                 
                                     ///$curr_course = dirname($curr_file);
                                     //$curr_dir = $path->getPath();
                                     $curr_course = $path->getPath();
                                     $curr_subject = dirname($curr_course);
-                                }
+                                }   
+                            }
                         }
                            
                     }
