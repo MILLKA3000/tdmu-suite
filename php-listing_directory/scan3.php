@@ -89,7 +89,7 @@ $totals = 0;
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                $path_str = "pharma_2/".$cat_id."/".$lang_id;
+                $path_str = "informatika/".$cat_id."/".$lang_id;
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
 
@@ -160,5 +160,27 @@ $totals = 0;
             echo "<p>Path: ".$file_path." Files count: ".$file_count."</p>";
         }
         echo "<p> Total files count: ".$totals."</p>";
+echo "<p>==================================================";
+echo "<table><tr>"
+foreach ($doc_1_categories as $cat_id=>$cat_name){
+echo "<td>".$cat_name."</td>";
+}
+echo "</tr><tr>";
+$last_lang = 'en';
+$last_cat = 'classes_stud';
+foreach ($res_count3 as $lang_key=>$lang_row){
+    if ($lang_key == $last_lang){
+        foreach ($lang_row as $cat_key=>$file_data){
+            $cat_flcount =0;
+            foreach ($cat_key as $flpath=>$flcount){
+                $cat_flcount = $cat_flcount+$flcount;
+            }
+            echo "<td>".$cat_flcount."</td>"
+        }
+    }else{
+        echo "</tr><tr>";
+    }
+}
+echo "/<table>"        
 ?>
 
