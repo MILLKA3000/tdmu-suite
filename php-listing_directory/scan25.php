@@ -164,8 +164,8 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                 
                                     ///$curr_course = dirname($curr_file);
                                     //$curr_dir = $path->getPath();
-                                    $curr_course = $path->getPath();
-                                    $curr_subject = dirname($curr_course);
+                                    //$curr_course = $path->getPath();
+                                    //$curr_subject = dirname($curr_course);
                                 }   
                             }
                         }

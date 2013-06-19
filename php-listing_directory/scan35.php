@@ -96,21 +96,18 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                if ($fkt_id <> "stomat"){
-                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
-                } else {
+                $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
+                if ($fkt_id == "stomat"){   //grabli N1
                     $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id;
                 }
-                if ($spec_id=="and1") {
+                if ($spec_id == "and1") {     //grabli N2
                     $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/and";
-                } else {
-                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 }
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
 
                     $dir  = new RecursiveDirectoryIterator($base_path, RecursiveDirectoryIterator::SKIP_DOTS);
-                    $objects = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::LEAVES_ONLY);
+                    $objects = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
                     //get first file path
                     foreach($objects as $last_path){
                         $last_dir = $last_path->getPath();
@@ -118,34 +115,14 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                     }
                     //process all files
                     foreach($objects as $path){                        
-                        $curr_dir = $path->getPath();
+                     ///   $curr_dir = $path->getPath();
                         //check is it current path is equal to previous - if not - print data and reset count
-                        if ($curr_dir!==$last_dir) {
-
-                        //prind data reset count
-                               //todo -0- extract path folder names and convert it to subj term etc.!!!!
-                               // echo "<p>term: ".$curr_term."</p>";
-                               // echo "<p>subject, course: ".$curr_subject."</p>";
-                               //check path and skip .Files or _files content
-                            if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
-                                //////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
-                                if ($filecount>0){
-                                  //  $res_count[$last_dir]= $filecount;
-                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
-                                }
-                                $totals = $totals + $filecount;
-                                $filecount = 0;//reset count - start a new folder
-                                $last_dir = $curr_dir; //reset folder name
-                            }    
-                               // echo "<p>debug: curr_dir ".$curr_dir."</p>";
-                                //todo -1- display subject name and course num
-                                //todo -2- save data there
-                            
-                                /// $res_count [$cat_id][$lang_id]= $filecount;//??                       
-                        }
+                     /////////   if ($curr_dir!==$last_dir) {
+                        if ($path->isFile()) {
+                            $curr_dir = $path->getPath();
                              //check path and skip .Files or _files content                                                    
                             if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
-                                //echo "<p>debug: curr_dir1 ".$curr_dir."</p>";
+                                
                                 //echo "<p>debug: check ".stripos($curr_file, $skip_dir1)."</p>";
                                 //check filetype
                                 $file = $path->getFilename();    
@@ -164,21 +141,50 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                                   //          $curr_subject = $curr_subject."  ".$subdir_name;
                                   //      }
                                   //  }
-                                }   
+                                }  
+                                echo "<p>debug: curr_dir1 ".$curr_dir." curr file count:".$filecount."</p>";        
                             }                          
-                    
-                
-                    }
-                    if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
-                                ////////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
+                        }
+                         /*   
+                        else {
+                        //prind data reset count
+                               //todo -0- extract path folder names and convert it to subj term etc.!!!!
+                               // echo "<p>term: ".$curr_term."</p>";
+                               // echo "<p>subject, course: ".$curr_subject."</p>";
+                               //check path and skip .Files or _files content
+                            if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
+                                echo "<p>Path: ".$curr_dir." Files count: ".$filecount."</p>";
                                 if ($filecount>0){
-                                   // $res_count[$last_dir]= $filecount;
-                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
+                                  //  $res_count[$last_dir]= $filecount;
+                                    /////////$res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$curr_dir]= $filecount;
+                                    if (!isset($res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$curr_dir])){
+                                        $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$curr_dir]= $filecount;
+                                    }                                    
                                 }
                                 $totals = $totals + $filecount;
                                 $filecount = 0;//reset count - start a new folder
                                 $last_dir = $curr_dir; //reset folder name
+                            }    
+                               // echo "<p>debug: curr_dir ".$curr_dir."</p>";
+                                //todo -1- display subject name and course num
+                                //todo -2- save data there
+                            
+                                /// $res_count [$cat_id][$lang_id]= $filecount;//??                       
+                        }
+                        */
                     }
+                    
+                    ///if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
+                                echo "<p>Path: ".$curr_dir." Files count: ".$filecount."</p>";
+                                if ($filecount>0){
+                                   // $res_count[$last_dir]= $filecount;
+                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$curr_dir]= $filecount;
+                                }
+                                $totals = $totals + $filecount;
+                                $filecount = 0;//reset count - start a new folder
+                                $last_dir = $curr_dir; //reset folder name
+                    ///}
+                    
                 }
             }
         }

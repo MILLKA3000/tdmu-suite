@@ -96,15 +96,12 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                if ($fkt_id <> "stomat"){
-                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
-                } else {
+                $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
+                if ($fkt_id == "stomat"){   //grabli N1
                     $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id;
                 }
-                if ($spec_id=="and1") {
+                if ($spec_id == "and1") {     //grabli N2
                     $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/and";
-                } else {
-                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 }
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
@@ -131,7 +128,9 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                                 //////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
                                 if ($filecount>0){
                                   //  $res_count[$last_dir]= $filecount;
-                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
+                                    if (!isset($res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir])){
+                                        $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
+                                    }
                                 }
                                 $totals = $totals + $filecount;
                                 $filecount = 0;//reset count - start a new folder
@@ -142,7 +141,7 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                                 //todo -2- save data there
                             
                                 /// $res_count [$cat_id][$lang_id]= $filecount;//??                       
-                        }
+                        } 
                              //check path and skip .Files or _files content                                                    
                             if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
                                 //echo "<p>debug: curr_dir1 ".$curr_dir."</p>";
@@ -166,14 +165,17 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                                   //  }
                                 }   
                             }                          
-                    
+                        
                 
                     }
                     if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
                                 ////////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
                                 if ($filecount>0){
                                    // $res_count[$last_dir]= $filecount;
-                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
+                                    /////$res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
+                                    if (!isset($res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir])){
+                                        $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
+                                    }
                                 }
                                 $totals = $totals + $filecount;
                                 $filecount = 0;//reset count - start a new folder
@@ -277,7 +279,7 @@ echo "<td><b>".$cat_total."<b></td>";
 $dep_all = $dep_all + $cat_total;
 }
 echo "<td><b>".$dep_all."<b></td></tr>";
-echo "</table>";
+echo "/<table>";
         
 ?>
 
