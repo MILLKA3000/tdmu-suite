@@ -71,42 +71,6 @@ function getSubDirToarray($dir)
     // All done!
     return $array_dir;
 }
-/*
-echo "=============================================================";
-$path = realpath("informatika/classes_stud/");
-
-//$path = realpath("Z:\home\ia-wp.org\www\wp-content\/");
-/////$path = realpath("uploads/informatika/classes_stud/en");
-
-//$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
-$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::CHILD_FIRST);
-//foreach($objects as $name => $object)
-//{
-//    echo "<p>".$name."</p>";    
-//}
-
-$filecount = 0;
-foreach($objects as $path)
-{
-    echo "<p>".$name."</p>";
-    if ($path->isDir()) {
-        if ($filecount > 0){
-           echo "<p>Files count: ".$filecount."</p>";
-           $filecount = 0;
-        }
-        echo "<p>".($path->__toString())."</p>";
-    } else {
-        if ($path->isFile()) {
-            $filecount = $filecount +1;
-        }
-    }   
-}
-//for a last object (required for a SELF_FIRST option)
-if ($filecount > 0){
-           echo "<p>Files count: ".$filecount."</p>";
-           $filecount = 0;
-}
-*/
 echo "=============================================================";
 $res_count = array();
 $res_info = array();
@@ -124,19 +88,19 @@ $tmp_dirname_arr = array();
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                $path_str = "informatika/".$cat_id."/".$lang_id;
+                $path_str = "surgery2/".$cat_id."/".$lang_id;
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
 
-                    //$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($base_path), RecursiveIteratorIterator::LEAVES_ONLY);//get only files
                     $dir  = new RecursiveDirectoryIterator($base_path, RecursiveDirectoryIterator::SKIP_DOTS);
                     $objects = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::LEAVES_ONLY);
+                    //get first file path
                     foreach($objects as $last_path){
                         $last_dir = $last_path->getPath();
                         break;
                     }
-                    foreach($objects as $path)
-                    {                        
+                    //process all files
+                    foreach($objects as $path){                        
                         $curr_dir = $path->getPath();
                         //check is it current path is equal to previous - if not - print data and reset count
                         if ($curr_dir!==$last_dir) {
@@ -145,6 +109,7 @@ $tmp_dirname_arr = array();
                                //todo -0- extract path folder names and convert it to subj term etc.!!!!
                                // echo "<p>term: ".$curr_term."</p>";
                                // echo "<p>subject, course: ".$curr_subject."</p>";
+                               //check path and skip .Files or _files content
                             if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
                                 echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
                                 $filecount = 0;//reset count - start a new folder
