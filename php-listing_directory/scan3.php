@@ -145,11 +145,11 @@ $tmp_dirname_arr = array();
                                //todo -0- extract path folder names and convert it to subj term etc.!!!!
                                // echo "<p>term: ".$curr_term."</p>";
                                // echo "<p>subject, course: ".$curr_subject."</p>";
-
+                            if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
                                 echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
                                 $filecount = 0;//reset count - start a new folder
                                 $last_dir = $curr_dir; //reset folder name
-                                
+                            }    
                                // echo "<p>debug: curr_dir ".$curr_dir."</p>";
                                 //todo -1- display subject name and course num
                                 //todo -2- save data there
