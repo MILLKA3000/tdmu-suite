@@ -8,7 +8,7 @@ body {background:White;}
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
 <body>
 <?php
- $ite=new RecursiveDirectoryIterator("informatika/");
+ $ite=new RecursiveDirectoryIterator("pharma_2/");
 
 $bytestotal=0;
 $nbfiles=0;

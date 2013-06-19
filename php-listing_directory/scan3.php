@@ -73,9 +73,10 @@ function getSubDirToarray($dir)
 }
 echo "=============================================================";
 $res_count = array();
+$res_count3 = array();
 $res_info = array();
 $tmp_dirname_arr = array();
-
+$totals = 0;
         //precess all categories
         foreach ($doc_1_categories as $cat_id=>$cat_name)
         {
@@ -88,7 +89,7 @@ $tmp_dirname_arr = array();
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                $path_str = "surgery2/".$cat_id."/".$lang_id;
+                $path_str = "pharma_2/".$cat_id."/".$lang_id;
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
 
@@ -111,7 +112,12 @@ $tmp_dirname_arr = array();
                                // echo "<p>subject, course: ".$curr_subject."</p>";
                                //check path and skip .Files or _files content
                             if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
-                                echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
+                                ////////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
+                                if ($filecount>0){
+                                    $res_count[$last_dir]= $filecount;
+                                    $res_count3[$lang_id][$cat_id][$last_dir]= $filecount;
+                                }
+                                $totals = $totals + $filecount;
                                 $filecount = 0;//reset count - start a new folder
                                 $last_dir = $curr_dir; //reset folder name
                             }    
@@ -150,5 +156,9 @@ $tmp_dirname_arr = array();
                 }
             }
         }
+        foreach ($res_count as $file_path=>$file_count){
+            echo "<p>Path: ".$file_path." Files count: ".$file_count."</p>";
+        }
+        echo "<p> Total files count: ".$totals."</p>";
 ?>
 
