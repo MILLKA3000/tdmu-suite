@@ -16,12 +16,12 @@ $skip_dir2 = "_files";
 //arrays with study entires text names
 $doc_1_categories = array(classes_stud=>"Матеріали до підготовки до практичних",lectures_stud=>"Матеріали до підготовки до лекції",metod_rozrobky=>"Методичнi вказiвки",presentations=>"Презентацій лекцій",rob_prog=>"Робочі програми");
 $doc_2_lang = array(en=>"Англійські",ru=>"Російські",uk=>"Українські");
-$doc_3_faculties = array(med=>"Медичний", pharm=>"pharm", stomat=>"stomat", nurse=>"nurse");
+$doc_3_faculties = array(med=>"Медичний", stomat=>"Стоматологічний", pharm=>"Фармацевтичний", nurse=>"ННІ медсестринства");
 $doc_4_spec_by_fkt = array (
                         med => array(lik=>"Лікувальна справа", biol=>"Біологія", medprof=>"Медико-профілактична справа", health=>"Здоров’я людини"),
                         stomat => array(stom=>"Стоматологія"),
                         pharm => array(prov_pharm=>"Фармація", klin_pharm=>"Клінічна фармація", tpkz=>"ТПКЗ"),
-                        nurse => array(_and=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
+                        nurse => array(and1=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
                         );
 //$doc_4_spec_med = array(lik=>"Лікувальна справа",biol=>"Біологія");
 //$doc_4_spec_stom = array(lik=>"Лікувальна справа",biol=>"Біологія");
@@ -77,19 +77,35 @@ $res_count3 = array();
 $res_info = array();
 $tmp_dirname_arr = array();
 $totals = 0;
+//precess all categories
+foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
+{
+  ///////  echo "<p>".$fkt_id."-Faculty: ".$doc_3_faculties[$fkt_id]."</p>";
+    //precess all specialities
+    foreach ($fkt_spec as $spec_id=>$spec_name)
+    {
         //precess all categories
         foreach ($doc_1_categories as $cat_id=>$cat_name)
         {
-            echo "<p>".$cat_name."</p>";
+      /////      echo "<p>".$cat_name."</p>";
             //process all languages
             foreach ($doc_2_lang as $lang_id=>$lang_name)
             {
-                echo "<p>".$lang_name."</p>";
+      ///////          echo "<p>".$lang_name."</p>";
                 
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                $path_str = "informatika/".$cat_id."/".$lang_id;
+                if ($fkt_id <> "stomat"){
+                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
+                } else {
+                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id;
+                }
+                if ($spec_id=="and1") {
+                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/and";
+                } else {
+                    $path_str = "informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
+                }
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
 
@@ -112,10 +128,10 @@ $totals = 0;
                                // echo "<p>subject, course: ".$curr_subject."</p>";
                                //check path and skip .Files or _files content
                             if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
-                                ////////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
+                                //////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
                                 if ($filecount>0){
-                                    $res_count[$last_dir]= $filecount;
-                                    $res_count3[$lang_id][$cat_id][$last_dir]= $filecount;
+                                  //  $res_count[$last_dir]= $filecount;
+                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
                                 }
                                 $totals = $totals + $filecount;
                                 $filecount = 0;//reset count - start a new folder
@@ -156,8 +172,8 @@ $totals = 0;
                     if ((stripos($curr_dir, $skip_dir1)===false)&&(stripos($curr_dir, $skip_dir2)===false)){
                                 ////////echo "<p>Path: ".$last_dir." Files count: ".$filecount."</p>";
                                 if ($filecount>0){
-                                    $res_count[$last_dir]= $filecount;
-                                    $res_count3[$lang_id][$cat_id][$last_dir]= $filecount;
+                                   // $res_count[$last_dir]= $filecount;
+                                    $res_count5[$fkt_id][$spec_id][$lang_id][$cat_id][$last_dir]= $filecount;
                                 }
                                 $totals = $totals + $filecount;
                                 $filecount = 0;//reset count - start a new folder
@@ -166,11 +182,14 @@ $totals = 0;
                 }
             }
         }
-        foreach ($res_count as $file_path=>$file_count){
-            echo "<p>Path: ".$file_path." Files count: ".$file_count."</p>";
-        }
-        echo "<p> Total files count: ".$totals."</p>";
-//var_dump($res_count3);        
+    }
+}    
+//foreach ($res_count as $file_path=>$file_count){
+//    echo "<p>Path: ".$file_path." Files count: ".$file_count."</p>";
+//}
+echo "<p> Total files count: ".$totals."</p>";
+//var_dump($res_count5);     
+   
 echo "<p>==================================================";
 echo "<table><tr>";
 echo "<td>Lang:</td>";
@@ -180,7 +199,14 @@ echo "<td>".$cat_name."</td>";
 echo "</tr><tr>";
 $last_lang = '';
 $last_cat = 'classes_stud';
-foreach ($res_count3 as $lang_key=>$lang_row){
+$last_fkt = '';
+$last_spec = '';
+foreach ($res_count5 as $fkt_key=>$fkt_row){
+echo '</tr><tr><td colspan="6">'.$doc_3_faculties[$fkt_key]."</td>";
+foreach ($fkt_row as $spec_key=>$spec_row){
+echo '</tr><tr><td colspan="6">'.$doc_4_spec_by_fkt[$fkt_key][$spec_key]."</td>";
+$last_lang = '';
+foreach ($spec_row as $lang_key=>$lang_row){
     if ($lang_key != $last_lang){
         echo "</tr><tr><td>".$doc_2_lang[$lang_key]."</td>";
         $last_lang = $lang_key;
@@ -194,6 +220,64 @@ foreach ($res_count3 as $lang_key=>$lang_row){
         echo "<td>".$cat_flcount."</td>";
     }
 }
-echo "/<table>";        
+}
+}
+echo "</table>";
+
+echo "<p>==================================================";
+echo "<table width=100% border=1><tr>";
+echo "<td>Мова:</td>";
+foreach ($doc_1_categories as $cat_id=>$cat_name){
+$cat_totals [$cat_id] = 0;
+echo "<td>".$cat_name."</td>";
+}
+echo "<td>Разом:</td>";
+echo "</tr><tr>";
+$cat_totals = array();
+$last_lang = '';
+$last_cat = 'classes_stud';
+$last_fkt = '';
+$last_spec = '';
+foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
+{
+    echo '</tr><tr><td colspan="7"><center>'.$doc_3_faculties[$fkt_id]."</center></td>";
+    //precess all specialities
+    foreach ($fkt_spec as $spec_id=>$spec_name)
+    {
+        echo '</tr><tr><td colspan="7"><center>'.$spec_name."</center></td>";
+        //process all languages
+        //$last_lang = '';
+        foreach ($doc_2_lang as $lang_id=>$lang_name)
+        {
+        //    if ($lang_id != $last_lang){
+            echo "</tr><tr><td>".$doc_2_lang[$lang_id]."</td>";
+        //    $lang_id = $lang_key;
+            $row_flcount = 0;
+            foreach ($doc_1_categories as $cat_id=>$cat_name){
+                $cat_flcount =0;
+                if (isset($res_count5[$fkt_id][$spec_id][$lang_id][$cat_id])){
+                
+                foreach ($res_count5[$fkt_id][$spec_id][$lang_id][$cat_id] as $flpath=>$flcount){
+                    $cat_flcount = $cat_flcount+$flcount;
+                }                           
+                }
+                echo "<td>".$cat_flcount."</td>";
+                $cat_totals [$cat_id] = $cat_totals [$cat_id]+ $cat_flcount;//total by each category
+                $row_flcount = $row_flcount + $cat_flcount;
+            }
+            echo "<td><b>".$row_flcount."</b></td>";
+        //    }        
+        }        
+    }
+}
+echo "</tr><tr><td><b>Всього по кафедрі:<b></td>";
+$dep_all = 0;
+foreach ($cat_totals as $cat_id=>$cat_total){
+echo "<td><b>".$cat_total."<b></td>";
+$dep_all = $dep_all + $cat_total;
+}
+echo "<td><b>".$dep_all."<b></td></tr>";
+echo "/<table>";
+        
 ?>
 
