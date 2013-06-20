@@ -9,22 +9,33 @@ body {background:White;}
 <body>
 
 <?php
-//init defaults:
-//skiped directories that have in path
-$skip_dir1 = ".files";
-$skip_dir2 = "_files";
-//arrays with study entires text names
-$doc_1_categories = array(classes_stud=>"Матеріали до підготовки до практичних",lectures_stud=>"Матеріали до підготовки до лекції",metod_rozrobky=>"Методичнi вказiвки",presentations=>"Презентацій лекцій",rob_prog=>"Робочі програми");
-$doc_2_lang = array(en=>"Англійські",ru=>"Російські",uk=>"Українські");
-$doc_3_faculties = array(med=>"Медичний", stomat=>"Стоматологічний", pharm=>"Фармацевтичний", nurse=>"ННІ медсестринства");
-$doc_4_spec_by_fkt = array (
-                        med => array(lik=>"Лікувальна справа", biol=>"Біологія", medprof=>"Медико-профілактична справа", health=>"Здоров’я людини"),
-                        stomat => array(stom=>"Стоматологія"),
-                        pharm => array(prov_pharm=>"Фармація", klin_pharm=>"Клінічна фармація", tpkz=>"ТПКЗ"),
-                        nurse => array(and1=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
-                        );
-
-
+class scanutils {
+var $file_pdf = array(array());
+var $in=0;
+	function getNumPagesPdf($filepath,$file){
+	
+    $fp = @fopen(preg_replace("/\[(.*?)\]/i", "",$filepath),"r");
+    $max=0;
+    while(!feof($fp)) {
+            $line = fgets($fp,255);
+            if (preg_match('/\/Count [0-9]+/', $line, $matches)){
+					//preg_match_all("/\/Page\W/", $matches[0], $matches2);
+                    preg_match('/[0-9]+/',$matches[0], $matches2);
+                    if ($max<$matches2[0]) $max=$matches2[0];
+            }
+    }
+    fclose($fp);
+    /*if($max==0){
+        $im = new Imagick($filepath);
+		$max=$im->getNumberImages(); 
+    }*/
+	
+		
+	$this->file_pdf[$this->in]['file']=$filepath;
+	$this->file_pdf[$this->in]['max']=$max;
+	$this->file_pdf[$this->in]['name_file']=$file;
+	$this->in++;
+	}
 //compare dir and subdir and return array of different foldernames
 function getSubDirFoolproof($dir, $sub)
 {
@@ -67,8 +78,92 @@ function getSubDirToarray($dir)
     $array_dir = array_filter(explode('/', $dir));
     // All done!
     return $array_dir;
+}   
 }
+//------------------Створення обєкту 
+$scan = new scanutils();
+//----------------------------------
+//init defaults:
+$doc_0_kaf = array(anatomy=>"Кафедра анатомiї людини",
+patologanatom=>"Кафедра патологiчної анатомiї з секцiйним курсом та судовою медициною",
+histolog=>"Кафедра гiстологiї та ембрiологiї", 
+med_biologia=>"Кафедра медичної бiологiї",
+micbio=>"Кафедра мiкробiологiї, вiрусологiї та iмунологiї",
+normal_phiz=>"Кафедра фiзiологiї",
+socmedic=>"Кафедра соцiальної медицини, органiзацiї та економiки охорони здоров'я з медичною статистикою та iсторiєю медицини",
+deontologi=>"Кафедра Медичної біоетики та деонтології",
+chemistry=>"Кафедра медичної бiохiмiї",
+pharmakologia=>"Кафедра фармакологiї з клiнiчною фармакологiєю",
+hihiena=>"Кафедра загальної гiгiєни та екологiї",
+patolog_phis=>"Кафедра патологiчної фiзiологiї",
+med_catastrof=>"Кафедра медицини катастроф та військової медицини",
+informatika=>"Кафедра медичної iнформатики",
+biofiz=>"Кафедра медичної фізики та медичного обладнання",
+philosophy=>"Кафедра філософії та суспільних дисциплін",
+sus_dusct=>"Кафедра українознавства",
+in_mow=>"Кафедра іноземних мов з медичною термінологією",
+i_nurse=>"Міжнародна медсестринська школа",
+distance=>"Сестринська справа (бакалавр) - дистанційна форма навчання",
+magistr=>"Сестринська справа (магістр) - дистанційна форма навчання",
+u_nurse=>"Кафедри, що викладають медсестринські дисципліни українською мовою",
+clinlab=>"Кафедра клiнiко-лабораторної дiагностики",
+propedeutic_vn_des=>"Кафедра пропедевтики внутрiшньої медицини та фтизiатрiї",
+vn_med_alerg=>"Кафедра внутрiшньої медицини №1",
+klinpat=>"Кафедра функціональної діагностики та клінічної патофізіології",
+vn_med_al=>"Кафедра внутрiшньої медицини №3",
+infect_desease=>"Кафедра iнфекцiйних хвороб з епiдемiологiєю, шкiрними та венеричними хворобами",
+nervous_desease=>"Кафедра неврологiї, психiатрiї, наркологiї та медичної психологiї",
+pedistrics=>"Кафедра педiатрiї та дитячої хiрургiї",
+zagalna_surgery=>"Кафедра загальної та оперативної хiрургiї з топографiчною анатомiєю",
+hospital_surgery=>"Кафедра хiрургiї №1",
+obstetrics_ginecology_1=>"Кафедра акушерства та гiнекологiї №1",
+sport_medic=>"Кафедра медичної реабiлiтацiї та спортивної медицини",
+lor=>"Кафедра оториноларингологiї, офтальмологiї та нейрохiрургiї",
+onkologia=>"Кафедра oнкологiї, променевої дiагностики i терапiї та радiацiйної медицини",
+policlin=>"Кафедра первинної медико-санітарної допомоги та сімейної медицини",
+nev_stan=>"Кафедра невідкладної та екстреної медичної допомоги",
+upr_ekon=>"Кафедра управління та економіки фармації",
+pharma_2=>"Кафедра фармацевтичної хiмiї",
+pharma_1=>"Кафедра фармакогнозiї з медичною ботанiкою",
+klinpharm=>"Кафедра клінічної фармації",
+lik_tex=>"Кафедра технології ліків",
+endoscop_fpo=>"Кафедра ендоскопії з малоінвазивною хірургією, урологією, ортопедією та травматологією ФПО",
+obsretr_fpo=>"Кафедра aкушерства та гiнекологiї ФПО",
+travmatologia_FPO=>"Кафедра хірургії ФПО",
+pediatria_fpo=>"Кафедра педiатрiї ФПО",
+therapy_fpo=>"Кафедра терапiї та сiмейної медицини ФПО",
+stomat_hir=>"Кафедра хірургічної стоматології",
+stomat_ter=>"Кафедра терапевтичної стоматології",
+stomat_ter_dit=>"Кафедра дитячої стоматології",
+stomat_ortop=>"Кафедра ортопедичної стоматології",
+meds=>"Кафедра клiнiчної iмунологiї, алергологiї та загального догляду за хворими",
+surgery2=>"Кафедра хiрургiї з анестезiологiєю №2",
+vnutrmed2=>"Кафедра внутрiшньої медицини №2",
+ginecology2=>"Кафедра акушерства та гiнекологiї №2",
+pediatria2=>"Кафедра педiатрiї №2"); 
+//skiped directories that have in path
+$skip_dir1 = ".files";
+$skip_dir2 = "_files";
+//arrays with study entires text names
+$doc_1_categories = array(classes_stud=>"Матеріали до підготовки до практичних",lectures_stud=>"Матеріали до підготовки до лекції",metod_rozrobky=>"Методичнi вказiвки",presentations=>"Презентацій лекцій",rob_prog=>"Робочі програми");
+$doc_2_lang = array(en=>"Англійські",ru=>"Російські",uk=>"Українські");
+$doc_3_faculties = array(med=>"Медичний", stomat=>"Стоматологічний", pharm=>"Фармацевтичний", nurse=>"ННІ медсестринства");
+$doc_4_spec_by_fkt = array (
+                        med => array(lik=>"Лікувальна справа", biol=>"Біологія", medprof=>"Медико-профілактична справа", health=>"Здоров’я людини"),
+                        stomat => array(stom=>"Стоматологія"),
+                        pharm => array(prov_pharm=>"Фармація", klin_pharm=>"Клінічна фармація", tpkz=>"ТПКЗ"),
+                        nurse => array(and1=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
+                        );
 
+echo "<div><table  width=100% border=1><tr><td width='30%'><h1><center>Кафедри</td><td width=70% ><h1><center>Результат</td></tr><tr><td valign=top><b>";
+foreach ($doc_0_kaf as $kaf_id=>$kaf_name){
+echo"<li><a href='scan3short.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
+} 
+echo "</td><td valign=top>";
+//retreive selected department (i.e. kafedra)                        
+if ($_GET['kaf']){
+
+                        
 $res_count5 = array();
 $tmp_dirname_arr = array();
 //precess all categories
@@ -87,12 +182,13 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
                 $filecount = 0;
                 /////$path_str = "uploads/informatika/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 //prepare base path
-                $path_str = "anatomy/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
+                $kaf_id = $_GET['kaf'];
+                $path_str = $kaf_id."/".$cat_id."/".$lang_id."/".$fkt_id."/".$spec_id;
                 if ($fkt_id == "stomat"){   //grabli N1
-                    $path_str = "anatomy/".$cat_id."/".$lang_id."/".$fkt_id;
+                    $path_str = $kaf_id."/".$cat_id."/".$lang_id."/".$fkt_id;
                 }
                 if ($spec_id == "and1") {     //grabli N2
-                    $path_str = "anatomy/".$cat_id."/".$lang_id."/".$fkt_id."/and";
+                    $path_str = $kaf_id."/".$cat_id."/".$lang_id."/".$fkt_id."/and";
                 }
                 $base_path = realpath($path_str);
                 if (is_dir($base_path)) {//process only existing base path
@@ -126,6 +222,7 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
 }    
 
 $cat_totals = array();
+echo "<center><h3>".$doc_0_kaf[$kaf_id]."</center></h3>";
 //print table header
 echo "<table width=100% border=1><tr>";
 echo "<td>Мова:</td>";
@@ -175,6 +272,8 @@ foreach ($cat_totals as $cat_id=>$cat_total){
 }
 echo "<td><b>".$dep_all."<b></td></tr>";
 echo "</table>";
+}
+echo "</td></tr></table></div>";
         
 ?>
 

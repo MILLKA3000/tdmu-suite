@@ -75,7 +75,7 @@ var $in=0;
 //------------------Створення обєкту 
 $scan = new scan();
 //----------------------------------
- echo "<div><table  width=100% border=1><tr><td width='40%'><h1><center>Кафедри</td><td width=60% ><h1><center>Результат</td></tr><tr><td valign=top>";
+echo "<div><table  width=100% border=1><tr><td width='40%'><h1><center>Кафедри</td><td width=60% ><h1><center>Результат</td></tr><tr><td valign=top>";
 echo"<b>
 <li><a href='scan.php?kaf=anatomy'> Кафедра анатомiї людини </a><br>
 <li><a href='scan.php?kaf=patologanatom'> Кафедра патологiчної анатомiї з секцiйним курсом та судовою медициною </a><br>
