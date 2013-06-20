@@ -81,7 +81,7 @@ function getSubDirToarray($dir)
 }   
 }
 //------------------Створення обєкту 
-$scan = new scanutils();
+$scanutils = new scanutils();
 //----------------------------------
 //init defaults:
 $doc_0_kaf = array(anatomy=>"Кафедра анатомiї людини",
@@ -155,7 +155,7 @@ $doc_4_spec_by_fkt = array (
                         nurse => array(and1=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
                         );
 
-echo "<div><table  width=100% border=1><tr><td width='30%'><h1><center>Кафедри</td><td width=70% ><h1><center>Результат</td></tr><tr><td valign=top><b>";
+echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (коротко - по спеціальностях)</th></tr><tr><td valign=top><b>";
 foreach ($doc_0_kaf as $kaf_id=>$kaf_name){
 echo"<li><a href='scan3short.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
 } 
@@ -163,7 +163,6 @@ echo "</td><td valign=top>";
 //retreive selected department (i.e. kafedra)                        
 if ($_GET['kaf']){
 
-                        
 $res_count5 = array();
 $tmp_dirname_arr = array();
 //precess all categories
@@ -222,25 +221,25 @@ foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
 }    
 
 $cat_totals = array();
-echo "<center><h3>".$doc_0_kaf[$kaf_id]."</center></h3>";
+echo "<center><h3>".$doc_0_kaf[$kaf_id]."</h3></center>";
 //print table header
-echo "<table width=100% border=1><tr>";
-echo "<td>Мова:</td>";
+echo "<table width=100% border=1><tbody><tr>";
+echo "<th>Мова:</th>";
 foreach ($doc_1_categories as $cat_id=>$cat_name){
     $cat_totals [$cat_id] = 0;
-    echo "<td>".$cat_name."</td>";
+    echo "<th>".$cat_name."</th>";
 }
-echo "<td>Разом:</td>";
+echo "<th>Разом:</th>";
 echo "</tr><tr>";
 //print table body
 //precess all departments (faculties)
 foreach ($doc_4_spec_by_fkt as $fkt_id=>$fkt_spec)
 {
-    echo '</tr><tr><td colspan="7"><center>'.$doc_3_faculties[$fkt_id]."</center></td>";
+    echo '</tr><tr><td colspan="7"><b><center>Факультет: '.$doc_3_faculties[$fkt_id]."<b></center></td>";
     //precess all specialities
     foreach ($fkt_spec as $spec_id=>$spec_name)
     {
-        echo '</tr><tr><td colspan="7"><center>'.$spec_name."</center></td>";
+        echo '</tr><tr><td colspan="7"><center>Спеціальність: '.$spec_name."</center></td>";
         //process all languages
         foreach ($doc_2_lang as $lang_id=>$lang_name)
         {
@@ -271,9 +270,9 @@ foreach ($cat_totals as $cat_id=>$cat_total){
     $dep_all = $dep_all + $cat_total;
 }
 echo "<td><b>".$dep_all."<b></td></tr>";
-echo "</table>";
+echo "</tbody></table>";
 }
-echo "</td></tr></table></div>";
+echo "</td></tr></tbody></table></div>";
         
 ?>
 

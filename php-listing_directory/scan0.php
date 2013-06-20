@@ -135,7 +135,7 @@ pediatria2=>"Кафедра педiатрiї №2");
 
 echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (файлів без структури)</th></tr><tr><td valign=top><b>";
 foreach ($doc_0_kaf as $kaf_id=>$kaf_name){
-echo"<li><a href='scan.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
+echo"<li><a href='scan0.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
 } 
 echo "</td>"; 
 echo "<td valign=top>"; 
