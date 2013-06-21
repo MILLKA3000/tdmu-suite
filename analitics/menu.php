@@ -16,7 +16,7 @@ include ("header.php");
 			<li><a href="sql.php">Sql запроси</a></li>
 			<li><a href="ser.php" style='font-size:10pt;'><div style='padding-top:-8px;margin-top:-8px;'>Середнє значення у БД "Контингент"</div></a></li>
 			<li><a href="moodle2cont.php" style='font-size:9pt;'><div style='padding-top:-8px;margin-top:-8px;'>Прив"язка дисциплін мудла і Контингента з кафедрами</div></a></li>
-			<li><a href="http://intranet.tdmu.edu.ua/data/kafedra/internal/scan.php" style='font-size:10pt;'><div style='padding-top:-8px;margin-top:-8px;'>Кількість матеріалів в "Інтранет"-і</div></a></li>
+			<li><a href="intranet_count.php" style='font-size:10pt;'><div style='padding-top:-8px;margin-top:-8px;'>Кількість матеріалів в "Інтранет"-і</div></a></li>
             <li><a href="ratinginfo.php" style='font-size:10pt;'><div style='padding-top:-8px;margin-top:-8px;'>Дані рейтингу викладачів</div></a></li>
 			<?}?>
 			
