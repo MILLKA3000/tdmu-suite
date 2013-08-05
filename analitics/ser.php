@@ -156,10 +156,10 @@ if(($_POST['var'])&&(!empty($_POST['id'])))
 for ($i=0;$i<count($sem);$i++)
 {	
 	$sql_year_sem.="(BT.SEMESTER in (";
-	for($j=1;$j<count($sem)+1;$j++)
+	for($j=1;$j<count($sem[$i])+1;$j++)
 	{
 		if (($sem[$i][$j]!=null)) {$sql_year_sem.=$sem[$i][$j]." ";}
-		if (($j!=count($sem))&&($sem[$i][$j+1]!=null)) {$sql_year_sem.=" , ";}
+		if (($j!=count($sem[$i]))&&($sem[$i][$j+1]!=null)) {$sql_year_sem.=" , ";}
 	}
 	$sql_year_sem.=") AND BT.EDUYEAR=".$sem[$i][0].") ";
  	if (($sem[$i+1][0]!=null)) {$sql_year_sem.="OR ";}
