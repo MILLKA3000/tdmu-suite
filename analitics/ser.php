@@ -126,45 +126,50 @@ if(($_POST['var'])&&(!empty($_POST['id'])))
  $i=0;
  if (!empty($_POST['id']))
  {
-  $chb = $_POST['id'];
-  foreach($chb as $index => $go)
-   {
-   $id[$i]=$index;
-   $i++;
-   };
-
- $id_sql=$contingent->for_sql($id);	
- if ($_POST['ekzam0']=='on'){$exampl=" AND S2T.credits_test>10 ";}else{$exampl="";}
-
-
-  foreach($chb as $index => $gos)
-   {$j=0;
-   	foreach($gos as $go => $go2)
-   	{$i=0;
-   		$sem[$j][$i]=$go[0].$go[1].$go[2].$go[3]; 
-   		foreach($go2 as $go3 => $go4)
-   		{
-  	 	$sem[$j][$i+1]=$go3;
-  		 $i++;
-  	 	};
-  	 	$j++;
-  	 	
-	};
-   };
+    $chb = $_POST['id'];
+ //   foreach($chb as $index => $go){
+ //       $id[$i]=$index;
+ //       $i++;
+ //   };
+    if ($_POST['ekzam0']=='on'){$exampl=" AND S2T.credits_test>10 ";}else{$exampl="";}
+    
+    $j=0;
+    foreach($chb as $index => $gos){
+        $id[$j]=$index;
+        foreach($gos as $go => $go2){
+            $i=0;
+            $sem[$j][$i]=$go[0].$go[1].$go[2].$go[3]; 
+            foreach($go2 as $go3 => $go4){
+                $sem[$j][$i+1]=$go3;
+                $i++;
+            };
+        };
+        $j++;
+    };
+   
+    $id_sql=$contingent->for_sql($id);
  };
 
 for ($i=0;$i<count($sem);$i++)
 {	
 	$sql_year_sem.="(BT.SEMESTER in (";
-	for($j=1;$j<count($sem)+1;$j++)
+	for($j=1;$j<count($sem[$i])+1;$j++)
 	{
 		if (($sem[$i][$j]!=null)) {$sql_year_sem.=$sem[$i][$j]." ";}
-		if (($j!=count($sem))&&($sem[$i][$j+1]!=null)) {$sql_year_sem.=" , ";}
+		if (($j!=count($sem[$i]))&&($sem[$i][$j+1]!=null)) {$sql_year_sem.=" , ";}
 	}
 	$sql_year_sem.=") AND BT.EDUYEAR=".$sem[$i][0].") ";
  	if (($sem[$i+1][0]!=null)) {$sql_year_sem.="OR ";}
 }
-
+//echo "<p>chb=";
+//print_r($chb);
+//echo "<p>sem0=";
+//print_r($sem);
+//echo "<p>id_sql=";
+//print_r($id_sql);
+//echo "<p>sql_year_sem=";
+//print_r($sql_year_sem);
+//echo "<p>";
 echo " <script type='text/javascript'> var mas = ".js_array($id)."</script>";
 //upd 2013-06: convert 120/80 ECTS level back to the 12-ball grade system
   $zagalne =$contingent->select("select
@@ -216,7 +221,8 @@ inner join B_VARIANT_ITEMS BVI_M
   on (BVI_M.VARIANTID = BT.VARIANTID)
 inner join B_VARIANT_ITEMS BVI_V 
   on (BVI_V.VARIANTID = BVI_M.PARENTVARIANTID)
-where  BVI_V.DISCIPLINEID = ".$_GET['DISCIPLINE']."
+where BVI_V.VARIANTID in (".$id_sql.")
+  and BVI_V.DISCIPLINEID = ".$_GET['DISCIPLINE']."
   and BVI_V.SPECIALITYID = ".$_GET['SPECIALITY']."
   and BT.DEPARTMENTID = ".$_GET['DEPARTMENT']." 
  ".$exampl." AND (".$sql_year_sem.");");
