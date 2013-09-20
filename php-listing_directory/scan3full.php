@@ -108,7 +108,7 @@ $doc_4_spec_by_fkt = array (
                         );
 echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (детально - по предметах)</th></tr><tr><td valign=top><b><ol>";
 foreach ($doc_0_kaf as $kaf_id=>$kaf_name){
-echo"<li><a href='scan3full2.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
+echo"<li><a href='scan3full.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
 } 
 echo "</ol></td><td valign=top>";
 //retreive selected department (i.e. kafedra)                        
