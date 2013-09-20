@@ -86,15 +86,15 @@ $scanutils = new scanutils();
 //init defaults:
 require_once "mysql_class_tdmu.php";
 $base_tdmu = new class_mysql_base_tdmu();
-$department = $base_tdmu->select("SELECT kaf_name_engl, kaf_name FROM tbl_tech_kaf ORDER BY kaf_name;");
-print_r($department);
+$department = $base_tdmu->select("SELECT kaf_name_engl, kaf_name FROM tbl_tech_kaf_folder ORDER BY kaf_name;");
+//print_r($department);
 for ($i=0;$i<count($department);$i++)
 {
-    $doc_0_kaf2[$department[$i][0]] = $department[$i][1];
+    $doc_0_kaf[$department[$i][0]] = $department[$i][1];
 }
 echo "<p>"; 
-print_r($doc_0_kaf2);
-
+//print_r($doc_0_kaf2);
+/*
 $doc_0_kaf = array(anatomy=>"Кафедра анатомiї людини",
 patologanatom=>"Кафедра патологiчної анатомiї з секцiйним курсом та судовою медициною",
 histolog=>"Кафедра гiстологiї та ембрiологiї", 
@@ -154,6 +154,7 @@ ginecology2=>"Кафедра акушерства та гiнекологiї №2",
 pediatria2=>"Кафедра педiатрiї №2");
 echo "<p>"; 
 print_r($doc_0_kaf);
+*/
 //skiped directories that have in path
 $skip_dir1 = ".files";
 $skip_dir2 = "_files";
@@ -167,11 +168,11 @@ $doc_4_spec_by_fkt = array (
                         pharm => array(prov_pharm=>"Фармація", klin_pharm=>"Клінічна фармація", tpkz=>"ТПКЗ"),
                         nurse => array(and1=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
                         );
-echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (детально - по предметах)</th></tr><tr><td valign=top><b>";
+echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (детально - по предметах)</th></tr><tr><td valign=top><b><ol>";
 foreach ($doc_0_kaf as $kaf_id=>$kaf_name){
-echo"<li><a href='scan3full.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
+echo"<li><a href='scan3full2.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
 } 
-echo "</td><td valign=top>";
+echo "</ol></td><td valign=top>";
 //retreive selected department (i.e. kafedra)                        
 if ($_GET['kaf']){
 
