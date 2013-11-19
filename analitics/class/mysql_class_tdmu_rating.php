@@ -2,9 +2,12 @@
  class class_mysql_base_tdmu_rating
 
 {
+  //var $sql_login="milenium";
+  //var $sql_passwd="milenium_";
   var $sql_login="tdmuauth";
   var $sql_passwd="19tdmu57";
   var $sql_database="tdmu";
+  //var $sql_host="192.168.1.19";
   var $sql_host="192.168.1.236";
 
   var $conn_id;
@@ -17,7 +20,7 @@ function sql_connect()
  {
   $this->conn_id = mysql_connect($this->sql_host,$this->sql_login,$this->sql_passwd);
   mysql_select_db($this->sql_database);
-  //mysql_query('SET NAMES cp1251', $this->conn_id);
+  mysql_query('SET NAMES cp1251', $this->conn_id);
   //mysql_query('SET NAMES UTF-8', $this->conn_id);
  }
 
