@@ -49,17 +49,19 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 //Get detail data for a selected department
                 $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                         FROM `tr_teacher_indices_values` tiv
-                                        INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                        INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                        INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                        inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                            SELECT distinct tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id
+                                        )
                                         WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name, tn.name");
             } else {
                 //Get detail data for all departments
                 $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                                 FROM `tr_teacher_indices_values` tiv
-                                                INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                                INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                                INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                        inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                            SELECT distinct tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id
+                                        )
                                                 WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) order by tk.kaf_name, tn.name");            
             }
             //Display detail data table
@@ -87,17 +89,19 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 //Get summary data for a selected department         
                 $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
                                         FROM `tr_teacher_indices_values` tiv
-                                        INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                        INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                        INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                        inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                            SELECT distinct tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id
+                                        )
                                         WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name");
             } else {
                 //Get summary data for all departments            
                 $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
                                                 FROM `tr_teacher_indices_values` tiv
-                                                INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                                INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                                INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                                inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                                inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                                    SELECT distinct tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id
+                                                )
                                                 WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) GROUP BY tk.kaf_id ORDER BY tk.kaf_name, tn.name");         
             }
             //Display summary data table
