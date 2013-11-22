@@ -2,13 +2,10 @@
  class class_mysql_base_tdmu
 
 {
-  //var $sql_login="milenium";
-  //var $sql_passwd="milenium_";
   var $sql_login="tdmuauth";
   var $sql_passwd="19tdmu57";
   var $sql_database="tdmu";
-  //var $sql_host="192.168.1.19";
-  var $sql_host="192.168.1.236";
+  var $sql_host="localhost";
 
   var $conn_id;
   var $sql_query;
