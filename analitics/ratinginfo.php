@@ -50,7 +50,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                         FROM `tr_teacher_indices_values` tiv
                                         inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
-                                        inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                        inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
                                             SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
                                         )
                                         WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name, tn.name");
@@ -59,7 +59,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                                 FROM `tr_teacher_indices_values` tiv
                                         inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
-                                        inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                        inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
                                             SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
                                         )
                                                 WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) order by tk.kaf_name, tn.name");            
@@ -90,7 +90,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
                                         FROM `tr_teacher_indices_values` tiv
                                         inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
-                                        inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                        inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
                                             SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
                                         )
                                         WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name");
@@ -99,7 +99,7 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
                                                 FROM `tr_teacher_indices_values` tiv
                                                 inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
-                                                inner JOIN `tbl_tech_kaf` tk ON tk.kaf_id = (
+                                                inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
                                                     SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
                                                 )
                                                 WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) GROUP BY tk.kaf_id ORDER BY tk.kaf_name, tn.name");         

@@ -8,7 +8,7 @@
   var $sql_passwd="19tdmu57";
   var $sql_database="tdmu";
   //var $sql_host="192.168.1.19";
-  var $sql_host="192.168.1.236";
+  var $sql_host="192.168.1.240";
 
   var $conn_id;
   var $sql_query;
