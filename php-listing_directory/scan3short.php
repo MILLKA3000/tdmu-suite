@@ -84,63 +84,15 @@ function getSubDirToarray($dir)
 $scanutils = new scanutils();
 //----------------------------------
 //init defaults:
-$doc_0_kaf = array(anatomy=>"Кафедра анатомiї людини",
-patologanatom=>"Кафедра патологiчної анатомiї з секцiйним курсом та судовою медициною",
-histolog=>"Кафедра гiстологiї та ембрiологiї", 
-med_biologia=>"Кафедра медичної бiологiї",
-micbio=>"Кафедра мiкробiологiї, вiрусологiї та iмунологiї",
-normal_phiz=>"Кафедра фiзiологiї",
-socmedic=>"Кафедра соцiальної медицини, органiзацiї та економiки охорони здоров'я з медичною статистикою та iсторiєю медицини",
-deontologi=>"Кафедра Медичної біоетики та деонтології",
-chemistry=>"Кафедра медичної бiохiмiї",
-pharmakologia=>"Кафедра фармакологiї з клiнiчною фармакологiєю",
-hihiena=>"Кафедра загальної гiгiєни та екологiї",
-patolog_phis=>"Кафедра патологiчної фiзiологiї",
-med_catastrof=>"Кафедра медицини катастроф та військової медицини",
-informatika=>"Кафедра медичної iнформатики",
-biofiz=>"Кафедра медичної фізики та медичного обладнання",
-philosophy=>"Кафедра філософії та суспільних дисциплін",
-sus_dusct=>"Кафедра українознавства",
-in_mow=>"Кафедра іноземних мов з медичною термінологією",
-i_nurse=>"Міжнародна медсестринська школа",
-distance=>"Сестринська справа (бакалавр) - дистанційна форма навчання",
-magistr=>"Сестринська справа (магістр) - дистанційна форма навчання",
-u_nurse=>"Кафедри, що викладають медсестринські дисципліни українською мовою",
-clinlab=>"Кафедра клiнiко-лабораторної дiагностики",
-propedeutic_vn_des=>"Кафедра пропедевтики внутрiшньої медицини та фтизiатрiї",
-vn_med_alerg=>"Кафедра внутрiшньої медицини №1",
-klinpat=>"Кафедра функціональної діагностики та клінічної патофізіології",
-vn_med_al=>"Кафедра внутрiшньої медицини №3",
-infect_desease=>"Кафедра iнфекцiйних хвороб з епiдемiологiєю, шкiрними та венеричними хворобами",
-nervous_desease=>"Кафедра неврологiї, психiатрiї, наркологiї та медичної психологiї",
-pedistrics=>"Кафедра педiатрiї та дитячої хiрургiї",
-zagalna_surgery=>"Кафедра загальної та оперативної хiрургiї з топографiчною анатомiєю",
-hospital_surgery=>"Кафедра хiрургiї №1",
-obstetrics_ginecology_1=>"Кафедра акушерства та гiнекологiї №1",
-sport_medic=>"Кафедра медичної реабiлiтацiї та спортивної медицини",
-lor=>"Кафедра оториноларингологiї, офтальмологiї та нейрохiрургiї",
-onkologia=>"Кафедра oнкологiї, променевої дiагностики i терапiї та радiацiйної медицини",
-policlin=>"Кафедра первинної медико-санітарної допомоги та сімейної медицини",
-nev_stan=>"Кафедра невідкладної та екстреної медичної допомоги",
-upr_ekon=>"Кафедра управління та економіки фармації",
-pharma_2=>"Кафедра фармацевтичної хiмiї",
-pharma_1=>"Кафедра фармакогнозiї з медичною ботанiкою",
-klinpharm=>"Кафедра клінічної фармації",
-lik_tex=>"Кафедра технології ліків",
-endoscop_fpo=>"Кафедра ендоскопії з малоінвазивною хірургією, урологією, ортопедією та травматологією ФПО",
-obsretr_fpo=>"Кафедра aкушерства та гiнекологiї ФПО",
-travmatologia_FPO=>"Кафедра хірургії ФПО",
-pediatria_fpo=>"Кафедра педiатрiї ФПО",
-therapy_fpo=>"Кафедра терапiї та сiмейної медицини ФПО",
-stomat_hir=>"Кафедра хірургічної стоматології",
-stomat_ter=>"Кафедра терапевтичної стоматології",
-stomat_ter_dit=>"Кафедра дитячої стоматології",
-stomat_ortop=>"Кафедра ортопедичної стоматології",
-meds=>"Кафедра клiнiчної iмунологiї, алергологiї та загального догляду за хворими",
-surgery2=>"Кафедра хiрургiї з анестезiологiєю №2",
-vnutrmed2=>"Кафедра внутрiшньої медицини №2",
-ginecology2=>"Кафедра акушерства та гiнекологiї №2",
-pediatria2=>"Кафедра педiатрiї №2"); 
+require_once "mysql_class_tdmu.php";
+$base_tdmu = new class_mysql_base_tdmu();
+$department = $base_tdmu->select("SELECT kaf_name_engl, kaf_name FROM tbl_tech_kaf_folder ORDER BY kaf_name;");
+//convert array(array()) type to the array(id=>value)
+for ($i=0;$i<count($department);$i++)
+{
+    $doc_0_kaf[$department[$i][0]] = $department[$i][1];
+}
+echo "<p>"; 
 //skiped directories that have in path
 $skip_dir1 = ".files";
 $skip_dir2 = "_files";
@@ -155,11 +107,11 @@ $doc_4_spec_by_fkt = array (
                         nurse => array(and1=>"Сестринська справа (молодший спеціаліст)", bsn=>"Сестринська справа (бакалавр)", blb=>"Лабораторна діагностика (бакалавр)")
                         );
 
-echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (коротко - по спеціальностях)</th></tr><tr><td valign=top><b>";
+echo "<div><table  width=100% border=1><tbody><tr><th width='30%'><h1><center>Кафедри</th><th width=70% ><h1><center>Результат (коротко - по спеціальностях)</th></tr><tr><td valign=top><b><ol>";
 foreach ($doc_0_kaf as $kaf_id=>$kaf_name){
 echo"<li><a href='scan3short.php?kaf=".$kaf_id."'>".$kaf_name."</a><br>";
 } 
-echo "</td><td valign=top>";
+echo "</ol></td><td valign=top>";
 //retreive selected department (i.e. kafedra)                        
 if ($_GET['kaf']){
 

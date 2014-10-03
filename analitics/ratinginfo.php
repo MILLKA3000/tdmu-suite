@@ -10,9 +10,10 @@ require_once "class/mysql_class_tdmu.php";
 require_once "class/mysql_class_tdmu_rating.php";
 
 //Get select controls data
-$base_tdmu_rating = new class_mysql_base_tdmu_rating();
-$ratingindex = $base_tdmu_rating->select("SELECT DISTINCT index_id, index_text FROM tr_teacher_indices;");
 $base_tdmu = new class_mysql_base_tdmu();
+//$base_tdmu_rating = new class_mysql_base_tdmu_rating();
+//$ratingindex = $base_tdmu_rating->select("SELECT DISTINCT index_id, index_text FROM tr_teacher_indices;");
+$ratingindex = $base_tdmu->select("SELECT DISTINCT index_id, index_text FROM tr_teacher_indices;");
 $department = $base_tdmu->select("SELECT kaf_id, kaf_name FROM tbl_tech_kaf ORDER BY kaf_name;");
 //print_r($ratingindex);
 //print_r($department);
@@ -43,28 +44,34 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
 
     if (!$_POST['INDEXID']==0){
         //Processing will start only if someone parameter is selected
+        for ($k=0;$k<count($ratingindex);$k++)
+        {
+          if ($_POST['INDEXID']==$ratingindex[$k][0]) { $param_name=$ratingindex[$k][1]; }
+        }
         if ($_POST['DETAIL']=="on") {
             //Processing "show detail info" checkbox option
             if (!$_POST['DEPARTMENT']==0) {
                 //Get detail data for a selected department
                 $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                         FROM `tr_teacher_indices_values` tiv
-                                        INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                        INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                        INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                        inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
+                                            SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
+                                        )
                                         WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name, tn.name");
             } else {
                 //Get detail data for all departments
                 $detail_mas =$base_tdmu->select("SELECT tk.kaf_name, tn.name, tiv.index_value
                                                 FROM `tr_teacher_indices_values` tiv
-                                                INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                                INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                                INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                        inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
+                                            SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
+                                        )
                                                 WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) order by tk.kaf_name, tn.name");            
             }
             //Display detail data table
             echo "<center><h3>Детальна інформація по кафедрі(ах)</h3>";       
-            echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=3><center><b>".$ratingindex[($_POST['INDEXID']-1)][1]."</b></td></tr><tr><td><center><b>Назва кафедри</td><td><center><b>П.І.Б. викладача</b></td><td><center><b>Значення параметру</b></td></tr>";
+            echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=3><center><b>".$param_name."</b></td></tr><tr><td><center><b>Назва кафедри</td><td><center><b>П.І.Б. викладача</b></td><td><center><b>Значення параметру</b></td></tr>";
             for ($i=0;$i<count($detail_mas);$i++)
             {
                 echo "<tr>";
@@ -87,22 +94,24 @@ echo "<br><center><input type='submit' name='var' value='Вибрати'><br></form>";
                 //Get summary data for a selected department         
                 $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
                                         FROM `tr_teacher_indices_values` tiv
-                                        INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                        INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                        INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                        inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                        inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
+                                            SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
+                                        )
                                         WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) AND (tk.kaf_id=".$_POST['DEPARTMENT'].") order by tk.kaf_name");
             } else {
                 //Get summary data for all departments            
                 $summary_mas =$base_tdmu->select("SELECT tk.kaf_name, SUM(tiv.index_value)
                                                 FROM `tr_teacher_indices_values` tiv
-                                                INNER JOIN `tbl_tech_name` tn ON tn.name_id = tiv.teacher_id
-                                                INNER JOIN `tbl_tech_journals` tj ON tj.name_id = tn.name_id
-                                                INNER JOIN `tbl_tech_kaf` tk ON tk.kaf_id = tj.kaf_id
+                                                inner JOIN `tbl_tech_name` tn ON tiv.teacher_id=tn.name_id 
+                                                inner JOIN `tbl_tech_kaf_folder` tk ON tk.kaf_id = (
+                                                    SELECT tjm.kaf_id FROM tbl_tech_journals tjm WHERE tjm.name_id = tn.name_id LIMIT 1
+                                                )
                                                 WHERE (tiv.index_id =".$_POST['INDEXID'].") AND (tiv.index_value >0) GROUP BY tk.kaf_id ORDER BY tk.kaf_name, tn.name");         
             }
             //Display summary data table
             echo "<center><h3>Сумарна інформація по кафедрі(ах)</h3>";            
-            echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=2><center><b>".$ratingindex[($_POST['INDEXID']-1)][1]."</b></td></tr><tr><td><center><b>Назва кафедри</b></td><td><center><b>Сумарно по кафедрі</b></td></tr>";
+            echo" <table bgcolor='white' border=1 width = 100% class='ser'><tr><td colspan=2><center><b>".$param_name."</b></td></tr><tr><td><center><b>Назва кафедри</b></td><td><center><b>Сумарно по кафедрі</b></td></tr>";
             $grand_total = 0;
             for ($i=0;$i<count($summary_mas);$i++)
             {
